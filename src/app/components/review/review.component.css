@@ -1,0 +1,316 @@
+.review-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.review-header {
+  margin-bottom: 2rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.progress-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.card-review-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  perspective: 1000px;
+}
+
+.flashcard {
+  width: 100%;
+  max-width: 500px;
+  height: 350px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard.flipping {
+  pointer-events: none;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--border);
+  background: white;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.card-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.card-content {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.6;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flip-hint {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.flip-hint svg {
+  opacity: 0.5;
+}
+
+.flip-prompt {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+}
+
+.response-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.response-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.25rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.response-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.response-icon {
+  font-size: 2rem;
+}
+
+.response-label {
+  color: var(--text-primary);
+}
+
+.response-again {
+  border-color: var(--danger);
+}
+
+.response-again:hover {
+  background: var(--danger-light);
+  border-color: var(--danger);
+}
+
+.response-hard {
+  border-color: var(--warning);
+}
+
+.response-hard:hover {
+  background: var(--warning-light);
+  border-color: var(--warning);
+}
+
+.response-good {
+  border-color: var(--success);
+}
+
+.response-good:hover {
+  background: var(--success-light);
+  border-color: var(--success);
+}
+
+.response-easy {
+  border-color: var(--primary);
+}
+
+.response-easy:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.review-complete {
+  text-align: center;
+  padding: 4rem 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.complete-icon {
+  color: var(--success);
+  margin-bottom: 1.5rem;
+}
+
+.review-complete h1 {
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.review-complete p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.complete-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.no-cards {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-cards svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-cards h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.no-cards p {
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .review-container {
+    padding: 1rem;
+  }
+
+  .flashcard {
+    height: 300px;
+  }
+
+  .card-content {
+    font-size: 1.5rem;
+  }
+
+  .response-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .response-btn {
+    padding: 1rem 0.75rem;
+  }
+
+  .response-icon {
+    font-size: 1.5rem;
+  }
+
+  .complete-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
