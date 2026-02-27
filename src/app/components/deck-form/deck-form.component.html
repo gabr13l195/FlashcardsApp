@@ -1,0 +1,48 @@
+<div class="deck-form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h1>{{ isEditMode ? 'Editar Mazo' : 'Nuevo Mazo' }}</h1>
+      <button class="btn-icon" (click)="cancel()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="deckForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Nombre del Mazo *</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Ej: Verbos irregulares"
+          class="form-input"
+          [class.error]="deckForm.get('name')?.invalid && deckForm.get('name')?.touched">
+        @if (deckForm.get('name')?.invalid && deckForm.get('name')?.touched) {
+          <span class="error-message">El nombre es requerido</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descripción (opcional)</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          placeholder="Describe el contenido de este mazo..."
+          class="form-textarea"
+          rows="3"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="deckForm.invalid">
+          {{ isEditMode ? 'Guardar Cambios' : 'Crear Mazo' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
