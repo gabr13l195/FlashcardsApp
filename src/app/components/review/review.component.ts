@@ -57,10 +57,17 @@ export class ReviewComponent implements OnInit {
     const dueCards = await this.supabaseService.getCardsDueForReview(this.deckId);
 
     // Si no hay cartas pendientes, mostrar todas las cartas
-    this.cards = dueCards.length > 0
+    let loadedCards = [...(dueCards.length > 0
       ? dueCards
-      : await this.supabaseService.getCards(this.deckId);
+      : await this.supabaseService.getCards(this.deckId))];
 
+    // Mezclar aleatoriamente las cartas (Fisher-Yates shuffle)
+    for (let i = loadedCards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [loadedCards[i], loadedCards[j]] = [loadedCards[j], loadedCards[i]];
+    }
+
+    this.cards = loadedCards;
     this.cardsTotal = this.cards.length;
 
     if (this.cards.length > 0) {
@@ -90,7 +97,15 @@ export class ReviewComponent implements OnInit {
     // Guardar la carta actualizada
     await this.supabaseService.updateCard(this.currentCard.id, updatedCard);
 
-    this.cardsReviewed++;
+    if (response === 'more') {
+      // Reinsertar la carta en una posición aleatoria entre las cartas restantes
+      // o al final si es la última.
+      const remainingCount = this.cards.length - this.currentCardIndex - 1;
+      const insertIndex = this.currentCardIndex + 1 + Math.floor(Math.random() * (remainingCount + 1));
+      this.cards.splice(insertIndex, 0, updatedCard);
+    } else {
+      this.cardsReviewed++;
+    }
 
     // Avanzar a la siguiente carta
     this.currentCardIndex++;
