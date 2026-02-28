@@ -1,9 +1,19 @@
 <div class="deck-form-container">
-  <div class="form-card">
+  <div class="form-card deck-theme">
     <div class="form-header">
-      <h1>{{ isEditMode ? 'Editar Mazo' : 'Nuevo Mazo' }}</h1>
-      <button class="btn-icon" (click)="cancel()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="header-content">
+        <div class="deck-icon-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <p class="subtitle">{{ isEditMode ? 'Editando mazo' : 'Crear un nuevo mazo' }}</p>
+      </div>
+      <button type="button" class="btn-icon" (click)="cancel()" title="Cerrar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -11,35 +21,28 @@
     </div>
 
     <form [formGroup]="deckForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="name">Nombre del Mazo *</label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          placeholder="Ej: Verbos irregulares"
-          class="form-input"
-          [class.error]="deckForm.get('name')?.invalid && deckForm.get('name')?.touched">
+      <div class="document-editor">
+        <input id="name" type="text" formControlName="name" placeholder="Título del mazo..." class="title-input"
+          [class.error]="deckForm.get('name')?.invalid && deckForm.get('name')?.touched" autocomplete="off">
         @if (deckForm.get('name')?.invalid && deckForm.get('name')?.touched) {
-          <span class="error-message">El nombre es requerido</span>
+        <span class="error-message title-error">El nombre es requerido</span>
         }
-      </div>
 
-      <div class="form-group">
-        <label for="description">Descripción (opcional)</label>
-        <textarea
-          id="description"
-          formControlName="description"
-          placeholder="Describe el contenido de este mazo..."
-          class="form-textarea"
+        <textarea id="description" formControlName="description"
+          placeholder="Escribe una breve descripción para este mazo (opcional)..." class="desc-input"
           rows="3"></textarea>
       </div>
 
-      <div class="form-actions">
+      <div class="form-actions deck-actions">
         <button type="button" class="btn-secondary" (click)="cancel()">
           Cancelar
         </button>
         <button type="submit" class="btn-primary" [disabled]="deckForm.invalid">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
           {{ isEditMode ? 'Guardar Cambios' : 'Crear Mazo' }}
         </button>
       </div>

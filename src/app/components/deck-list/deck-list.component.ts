@@ -16,14 +16,16 @@ export class DeckListComponent implements OnInit {
   decks: Deck[] = [];
   cardsByDeck: Map<string, Flashcard[]> = new Map();
   cardsDueByDeck: Map<string, number> = new Map();
+  isLoading = true;
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(private supabaseService: SupabaseService) { }
 
   ngOnInit(): void {
     void this.loadDecks();
   }
 
   async loadDecks(): Promise<void> {
+    this.isLoading = true;
     try {
       this.decks = await this.supabaseService.getDecks();
       this.cardsByDeck.clear();
@@ -41,6 +43,8 @@ export class DeckListComponent implements OnInit {
       );
     } catch (error) {
       console.error('Error cargando mazos desde Supabase', error);
+    } finally {
+      this.isLoading = false;
     }
   }
 

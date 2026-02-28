@@ -19,19 +19,24 @@ export class CardListComponent implements OnInit {
   cards: Flashcard[] = [];
   showBack = false;
   selectedCard?: Flashcard;
+  isLoading = true;
 
   constructor(
     private supabaseService: SupabaseService,
     private spacedRepetitionService: SpacedRepetitionService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(async (params) => {
       this.deckId = params['id'];
       if (this.deckId) {
-        void this.loadDeck();
-        void this.loadCards();
+        this.isLoading = true;
+        await Promise.all([
+          this.loadDeck(),
+          this.loadCards()
+        ]);
+        this.isLoading = false;
       }
     });
   }

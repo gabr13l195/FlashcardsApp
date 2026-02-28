@@ -1,35 +1,135 @@
-/* Variables CSS globales */
+/* ============================================
+   FlashMaster — Global Design System (Dark Theme)
+   ============================================ */
+
+/* Google Fonts — Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ── CSS Variables ── */
 :root {
-  /* Colores principales */
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-light: #dbeafe;
-  
-  /* Colores de estado */
-  --success: #10b981;
-  --success-light: #d1fae5;
-  --warning: #f59e0b;
-  --warning-light: #fef3c7;
-  --danger: #ef4444;
-  --danger-light: #fee2e2;
-  
-  /* Colores de texto */
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --text-tertiary: #9ca3af;
-  
-  /* Fondos */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-hover: #f3f4f6;
-  
-  /* Bordes */
-  --border: #e5e7eb;
-  --border-light: #f3f4f6;
+  /* Primary gradient (blue → violet) */
+  --primary: #4f8cff;
+  --primary-hover: #3b7bf7;
+  --primary-light: rgba(79, 140, 255, 0.12);
+  --secondary: #8b5cf6;
+  --secondary-hover: #7c3aed;
+  --secondary-light: rgba(139, 92, 246, 0.12);
+  --gradient-primary: linear-gradient(135deg, #4f8cff 0%, #8b5cf6 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #3b7bf7 0%, #7c3aed 100%);
+
+  /* Glow effects */
+  --glow-primary: 0 0 20px rgba(79, 140, 255, 0.3), 0 0 40px rgba(139, 92, 246, 0.15);
+  --glow-primary-sm: 0 0 10px rgba(79, 140, 255, 0.2);
+
+  /* Status colors */
+  --success: #34d399;
+  --success-light: rgba(52, 211, 153, 0.15);
+  --warning: #fbbf24;
+  --warning-light: rgba(251, 191, 36, 0.12);
+  --danger: #f87171;
+  --danger-light: rgba(248, 113, 113, 0.12);
+
+  /* Text */
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-on-gradient: #ffffff;
+
+  /* Backgrounds */
+  --bg-body: #06080f;
+  --bg-primary: #0c1222;
+  --bg-card: rgba(15, 23, 42, 0.65);
+  --bg-card-solid: #0f172a;
+  --bg-input: rgba(15, 23, 42, 0.8);
+  --bg-hover: rgba(30, 41, 59, 0.5);
+  --bg-elevated: rgba(30, 41, 59, 0.4);
+
+  /* Borders */
+  --border: rgba(51, 65, 85, 0.5);
+  --border-light: rgba(51, 65, 85, 0.3);
+  --border-glow: rgba(79, 140, 255, 0.3);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(148, 163, 184, 0.08);
+  --glass-blur: blur(16px);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 4px 20px rgba(79, 140, 255, 0.15);
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Reset y estilos base */
-* {
+/* ── Keyframe Animations ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: var(--glow-primary-sm); }
+  50% { box-shadow: var(--glow-primary); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── Reset & Base ── */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -37,13 +137,17 @@
 
 html, body {
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-secondary);
+  background: var(--bg-body);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(79, 140, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-primary);
+  line-height: 1.6;
 }
 
 body {
@@ -51,68 +155,154 @@ body {
   padding: 0;
 }
 
-/* Estilos para botones comunes */
+/* ── Global Link Styles ── */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── Global Button Styles ── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--primary);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--text-on-gradient);
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-primary-hover);
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
 
 .btn-primary:hover {
-  background: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-primary);
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 1.5rem;
-  background: var(--bg-secondary);
+  background: var(--bg-card);
   color: var(--text-primary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  text-decoration: none;
+  transition: all var(--transition-base);
+  backdrop-filter: var(--glass-blur);
 }
 
 .btn-secondary:hover {
   background: var(--bg-hover);
   border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
 }
 
-/* Utilidades */
+/* ── Global Form Inputs (Dark) ── */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+textarea,
+select {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  transition: all var(--transition-base);
+  backdrop-filter: var(--glass-blur);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.15), var(--glow-primary-sm);
+}
+
+/* ── Utility: Container ── */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
-/* Scrollbar personalizado */
+/* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: var(--bg-body);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--bg-body);
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(79, 140, 255, 0.3);
+  color: var(--text-primary);
 }

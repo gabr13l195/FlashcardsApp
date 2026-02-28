@@ -1,50 +1,98 @@
 <div class="card-form-container">
   <div class="form-card">
     <div class="form-header">
-      <h1>{{ isEditMode ? 'Editar Carta' : 'Nueva Carta' }}</h1>
-      <button class="btn-icon" (click)="cancel()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+      <div>
+        <h1>{{ isEditMode ? 'Editar Carta' : 'Nueva Carta' }}</h1>
+        <p class="subtitle">Escribe el frente y el reverso de tu tarjeta</p>
+      </div>
+      <div class="header-right">
+        @if (!isEditMode && cardsAdded > 0) {
+        <span class="cards-counter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          {{ cardsAdded }} añadida{{ cardsAdded !== 1 ? 's' : '' }}
+        </span>
+        }
+        <button type="button" class="btn-icon" (click)="cancel()" title="Cerrar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="front">Inglés (Frente) *</label>
-        <input
-          id="front"
-          type="text"
-          formControlName="front"
-          placeholder="Ej: Hello"
-          class="form-input"
-          [class.error]="cardForm.get('front')?.invalid && cardForm.get('front')?.touched">
-        @if (cardForm.get('front')?.invalid && cardForm.get('front')?.touched) {
-          <span class="error-message">El texto en inglés es requerido</span>
-        }
+    @if (showSuccess) {
+    <div class="success-toast">
+      <div class="toast-content">
+        <div class="toast-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="toast-text">
+          <strong>¡Carta guardada con éxito!</strong>
+          <span>El formulario está listo para tu siguiente carta.</span>
+        </div>
       </div>
+    </div>
+    }
 
-      <div class="form-group">
-        <label for="back">Español (Reverso) *</label>
-        <input
-          id="back"
-          type="text"
-          formControlName="back"
-          placeholder="Ej: Hola"
-          class="form-input"
-          [class.error]="cardForm.get('back')?.invalid && cardForm.get('back')?.touched">
-        @if (cardForm.get('back')?.invalid && cardForm.get('back')?.touched) {
+    <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
+      <div class="card-faces">
+        <!-- Front Face -->
+        <div class="face-container">
+          <div class="face-header">
+            <span class="face-label">Frente</span>
+            <span class="face-lang">Inglés</span>
+          </div>
+          <textarea id="front" formControlName="front" placeholder="Ej: To achieve your goals..." class="face-textarea"
+            [class.error]="cardForm.get('front')?.invalid && cardForm.get('front')?.touched" rows="4"></textarea>
+          @if (cardForm.get('front')?.invalid && cardForm.get('front')?.touched) {
+          <span class="error-message">El texto es requerido</span>
+          }
+        </div>
+
+        <div class="faces-divider">
+          <div class="divider-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M7 16V4M7 4L3 8M7 4L11 8"></path>
+              <path d="M17 8v12M17 20l-4-4M17 20l4-4"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Back Face -->
+        <div class="face-container">
+          <div class="face-header">
+            <span class="face-label">Reverso</span>
+            <span class="face-lang">Español</span>
+          </div>
+          <textarea id="back" formControlName="back" placeholder="Ej: Para lograr tus metas..." class="face-textarea"
+            [class.error]="cardForm.get('back')?.invalid && cardForm.get('back')?.touched" rows="4"></textarea>
+          @if (cardForm.get('back')?.invalid && cardForm.get('back')?.touched) {
           <span class="error-message">La traducción es requerida</span>
-        }
+          }
+        </div>
       </div>
 
       <div class="form-actions">
         <button type="button" class="btn-secondary" (click)="cancel()">
-          Cancelar
+          {{ isEditMode || cardsAdded === 0 ? 'Cancelar' : 'Terminar y Volver' }}
         </button>
         <button type="submit" class="btn-primary" [disabled]="cardForm.invalid">
-          {{ isEditMode ? 'Guardar Cambios' : 'Crear Carta' }}
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          {{ isEditMode ? 'Guardar Cambios' : 'Añadir y Continuar' }}
         </button>
       </div>
     </form>

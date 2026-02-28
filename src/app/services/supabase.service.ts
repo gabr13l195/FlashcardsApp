@@ -31,7 +31,11 @@ export class SupabaseService {
   private readonly supabase: SupabaseClient;
 
   constructor() {
-    this.supabase = createClient(this.supabaseUrl, this.supabaseAnonKey);
+    this.supabase = createClient(this.supabaseUrl, this.supabaseAnonKey, {
+      auth: {
+        persistSession: false // Evita errores de lock en el navegador durante dev/recargas
+      }
+    });
   }
 
   // ---------- Mapeos helper ----------

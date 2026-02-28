@@ -17,6 +17,8 @@ export class CardFormComponent implements OnInit {
   isEditMode = false;
   deckId?: string;
   cardId?: string;
+  cardsAdded = 0;
+  showSuccess = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +35,7 @@ export class CardFormComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.deckId = params['deckId'];
-      
+
       if (params['id']) {
         this.isEditMode = true;
         this.cardId = params['id'];
@@ -44,7 +46,7 @@ export class CardFormComponent implements OnInit {
 
   async loadCard(): Promise<void> {
     if (!this.cardId) return;
-    
+
     const card = await this.supabaseService.getCard(this.cardId);
     if (card) {
       this.deckId = card.deckId;
@@ -65,14 +67,23 @@ export class CardFormComponent implements OnInit {
         front: formValue.front,
         back: formValue.back
       });
+      this.router.navigate(['/decks', this.deckId, 'cards']);
     } else {
       await this.supabaseService.createCard({
         ...formValue,
         deckId: this.deckId
       });
-    }
+      this.cardsAdded++;
+      this.showSuccess = true;
+      this.cardForm.reset();
+      this.cardForm.markAsPristine();
+      this.cardForm.markAsUntouched();
 
-    this.router.navigate(['/decks', this.deckId, 'cards']);
+      // Auto-hide success toast after 2 seconds
+      setTimeout(() => {
+        this.showSuccess = false;
+      }, 2000);
+    }
   }
 
   cancel(): void {

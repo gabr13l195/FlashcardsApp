@@ -13,11 +13,12 @@ export interface Flashcard {
   lastReviewDate?: Date; // Fecha de la última repetición
 }
 
-export type ReviewResponse = 'again' | 'hard' | 'good' | 'easy';
+// Respuesta del usuario durante el repaso
+// 'more'  => Necesito repasar más
+// 'known' => Me la sé
+export type ReviewResponse = 'more' | 'known';
 
 export const ReviewResponseLabels: Record<ReviewResponse, string> = {
-  again: 'No sé',
-  hard: 'Recuerdo medio',
-  good: 'Bien',
-  easy: 'Aprendida'
+  more: 'Necesito repasar más',
+  known: 'Me la sé'
 };

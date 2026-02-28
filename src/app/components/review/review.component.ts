@@ -20,6 +20,7 @@ export class ReviewComponent implements OnInit {
   currentCardIndex = 0;
   currentCard?: Flashcard;
   showBack = false;
+  isTransitioning = false;
   isFlipping = false;
   reviewComplete = false;
   cardsReviewed = 0;
@@ -32,7 +33,7 @@ export class ReviewComponent implements OnInit {
     private spacedRepetitionService: SpacedRepetitionService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -51,17 +52,17 @@ export class ReviewComponent implements OnInit {
 
   async loadCards(): Promise<void> {
     if (!this.deckId) return;
-    
+
     // Obtener cartas pendientes de repaso
     const dueCards = await this.supabaseService.getCardsDueForReview(this.deckId);
-    
+
     // Si no hay cartas pendientes, mostrar todas las cartas
-    this.cards = dueCards.length > 0 
-      ? dueCards 
+    this.cards = dueCards.length > 0
+      ? dueCards
       : await this.supabaseService.getCards(this.deckId);
-    
+
     this.cardsTotal = this.cards.length;
-    
+
     if (this.cards.length > 0) {
       this.currentCard = this.cards[0];
     } else {
@@ -71,10 +72,10 @@ export class ReviewComponent implements OnInit {
 
   flipCard(): void {
     if (this.isFlipping) return;
-    
+
     this.isFlipping = true;
     this.showBack = !this.showBack;
-    
+
     setTimeout(() => {
       this.isFlipping = false;
     }, 300);
@@ -85,18 +86,29 @@ export class ReviewComponent implements OnInit {
 
     // Procesar la respuesta con el algoritmo de repetición espaciada
     const updatedCard = this.spacedRepetitionService.processReview(this.currentCard, response);
-    
+
     // Guardar la carta actualizada
     await this.supabaseService.updateCard(this.currentCard.id, updatedCard);
-    
+
     this.cardsReviewed++;
-    
+
     // Avanzar a la siguiente carta
     this.currentCardIndex++;
-    
+
     if (this.currentCardIndex < this.cards.length) {
-      this.currentCard = this.cards[this.currentCardIndex];
+      // Initiate smooth transition out
+      this.isTransitioning = true;
       this.showBack = false;
+
+      // Wait 150ms for UI to slide out, then swap card data
+      setTimeout(() => {
+        this.currentCard = this.cards[this.currentCardIndex];
+
+        // Wait a tiny bit for DOM refresh then slide back in
+        setTimeout(() => {
+          this.isTransitioning = false;
+        }, 30);
+      }, 150);
     } else {
       // Repaso completado
       this.reviewComplete = true;
