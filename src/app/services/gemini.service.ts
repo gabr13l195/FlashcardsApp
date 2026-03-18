@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeminiService {
   private _genAI: GoogleGenerativeAI;
-  private readonly API_KEY = 'AIzaSyDIJuUGAYiq1JBqt2mtZoBCB07JFkD0ZEE';
+  private readonly API_KEY = environment.geminiApiKey;
 
   constructor() {
     this._genAI = new GoogleGenerativeAI(this.API_KEY);
