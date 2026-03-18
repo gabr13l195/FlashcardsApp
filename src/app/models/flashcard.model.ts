@@ -1,7 +1,8 @@
 export interface Flashcard {
   id: string;
-  front: string; // Palabra en inglés
-  back: string; // Traducción o significado
+  word: string; // Palabra en inglés
+  meanings: string[]; // Traducciones o significados
+  sentence?: string; // Oración de ejemplo opcional
   deckId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -13,12 +14,12 @@ export interface Flashcard {
   lastReviewDate?: Date; // Fecha de la última repetición
 }
 
-// Respuesta del usuario durante el repaso
-// 'more'  => Necesito repasar más
-// 'known' => Me la sé
-export type ReviewResponse = 'more' | 'known';
+// Respuesta del usuario durante el repaso (Algoritmo SM-2 modificado)
+export type ReviewResponse = 'again' | 'hard' | 'good' | 'easy';
 
 export const ReviewResponseLabels: Record<ReviewResponse, string> = {
-  more: 'Necesito repasar más',
-  known: 'Me la sé'
+  again: 'De nuevo',
+  hard: 'Difícil',
+  good: 'Bien',
+  easy: 'Fácil'
 };

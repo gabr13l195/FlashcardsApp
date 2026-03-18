@@ -23,6 +23,17 @@
     </a>
   </div>
 
+  <div class="search-container">
+    <div class="search-input-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" class="search-icon">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" class="search-input" placeholder="Buscar palabras o significados..." (input)="onSearch($event)" />
+    </div>
+  </div>
+
   @if (isLoading) {
   <div class="loading-state">
     <div class="spinner"></div>
@@ -40,52 +51,62 @@
     <p>Crea tu primera carta para comenzar</p>
     <a [routerLink]="['/decks', deckId, 'cards', 'new']" class="btn-primary">Crear Primera Carta</a>
   </div>
+  } @else if (filteredCards.length === 0) {
+  <div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <h2>No se encontraron resultados</h2>
+    <p>Intenta con otra palabra o significado</p>
+  </div>
   } @else {
-  <div class="cards-grid">
-    @for (card of cards; track card.id) {
-    <div class="card-item">
-      <div class="card-content">
-        <div class="card-front">
-          <span class="card-label">Inglés</span>
-          <p class="card-text">{{ card.front }}</p>
-        </div>
-        <div class="card-divider"></div>
-        <div class="card-back">
-          <span class="card-label">Español</span>
-          <p class="card-text">{{ card.back }}</p>
-        </div>
-      </div>
-
-      <div class="card-meta">
-        <div class="card-stats">
-          <div class="stat">
-            <span class="stat-label">Dominio</span>
-            <span class="stat-value">{{ getMasteryPercentage(card) }}%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Repeticiones</span>
-            <span class="stat-value">{{ card.repetitions }}</span>
-          </div>
-        </div>
-        <div class="card-actions">
-          <a [routerLink]="['/decks', deckId, 'cards', card.id, 'edit']" class="btn-icon-small">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-          </a>
-          <button class="btn-icon-small btn-danger" (click)="deleteCard(card.id)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-    }
+  <div class="table-container">
+    <table class="cards-table">
+      <thead>
+        <tr>
+          <th>Palabra</th>
+          <th>Significados</th>
+          <th>Dominio</th>
+          <th class="col-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (card of filteredCards; track card.id) {
+        <tr>
+          <td class="cell-word">{{ card.word }}</td>
+          <td class="cell-meaning">
+            <span class="meanings-text">{{ card.meanings ? card.meanings.join(', ') : '' }}</span>
+            @if (card.sentence) {
+              <span class="sentence-text">{{ card.sentence }}</span>
+            }
+          </td>
+          <td class="cell-mastery">
+            <div class="mastery-indicator" [class.high]="getMasteryPercentage(card) >= 80" [class.medium]="getMasteryPercentage(card) >= 40 && getMasteryPercentage(card) < 80" [class.low]="getMasteryPercentage(card) < 40">
+              {{ getMasteryPercentage(card) }}%
+            </div>
+          </td>
+          <td class="cell-actions">
+            <a [routerLink]="['/decks', deckId, 'cards', card.id, 'edit']" class="btn-icon-small" title="Editar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </a>
+            <button class="btn-icon-small btn-danger" (click)="deleteCard(card.id)" title="Eliminar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
   </div>
   }
 </div>

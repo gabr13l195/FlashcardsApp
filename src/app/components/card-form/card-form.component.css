@@ -172,7 +172,8 @@
   font-weight: 600;
 }
 
-.face-textarea {
+.face-textarea,
+.face-input {
   flex: 1;
   width: 100%;
   padding: 1.25rem;
@@ -186,16 +187,74 @@
   box-sizing: border-box;
 }
 
-.face-textarea::placeholder {
+.face-input {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.face-textarea::placeholder,
+.face-input::placeholder {
   color: var(--text-tertiary);
 }
 
-.face-textarea:focus {
+.face-textarea:focus,
+.face-input:focus {
   outline: none;
 }
 
-.face-textarea.error {
+.face-textarea.error,
+.face-input.error {
   background: rgba(248, 113, 113, 0.05);
+}
+
+.meanings-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.meaning-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.meaning-input {
+  font-size: 1.15rem;
+  flex: 1;
+}
+
+.btn-remove {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  opacity: 0.5;
+}
+
+.btn-remove:hover {
+  opacity: 1;
+  background: rgba(248, 113, 113, 0.1);
+  border-color: transparent;
+}
+
+.btn-add {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-add:hover {
+  background: rgba(79, 140, 255, 0.1);
 }
 
 .error-message {

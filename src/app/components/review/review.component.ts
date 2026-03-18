@@ -23,6 +23,7 @@ export class ReviewComponent implements OnInit {
   isTransitioning = false;
   isFlipping = false;
   reviewComplete = false;
+  isPracticeMode = false;
   cardsReviewed = 0;
   cardsTotal = 0;
 
@@ -39,6 +40,7 @@ export class ReviewComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.deckId = params['id'];
       if (this.deckId) {
+        this.isPracticeMode = this.route.snapshot.queryParamMap.get('mode') === 'practice';
         void this.loadDeck();
         void this.loadCards();
       }
@@ -53,13 +55,15 @@ export class ReviewComponent implements OnInit {
   async loadCards(): Promise<void> {
     if (!this.deckId) return;
 
-    // Obtener cartas pendientes de repaso
-    const dueCards = await this.supabaseService.getCardsDueForReview(this.deckId);
+    let dueCards: Flashcard[];
+    if (this.isPracticeMode) {
+      dueCards = await this.supabaseService.getCards(this.deckId);
+    } else {
+      dueCards = await this.supabaseService.getCardsDueForReview(this.deckId);
+    }
 
-    // Si no hay cartas pendientes, mostrar todas las cartas
-    let loadedCards = [...(dueCards.length > 0
-      ? dueCards
-      : await this.supabaseService.getCards(this.deckId))];
+    // Solo mostrar cartas listas para repaso (o todas si es modo práctica)
+    let loadedCards = [...dueCards];
 
     // Mezclar aleatoriamente las cartas (Fisher-Yates shuffle)
     for (let i = loadedCards.length - 1; i > 0; i--) {
@@ -94,14 +98,21 @@ export class ReviewComponent implements OnInit {
     // Procesar la respuesta con el algoritmo de repetición espaciada
     const updatedCard = this.spacedRepetitionService.processReview(this.currentCard, response);
 
-    // Guardar la carta actualizada
-    await this.supabaseService.updateCard(this.currentCard.id, updatedCard);
+    // Guardar la carta actualizada SOLO si NO estamos en modo práctica
+    if (!this.isPracticeMode) {
+      await this.supabaseService.updateCard(this.currentCard.id, updatedCard);
+    }
 
-    if (response === 'more') {
-      // Reinsertar la carta en una posición aleatoria entre las cartas restantes
-      // o al final si es la última.
+    if (response === 'again') {
+      // Asegurar que la carta no aparezca inmediatamente como la siguiente si hay más cartas en la cola
       const remainingCount = this.cards.length - this.currentCardIndex - 1;
-      const insertIndex = this.currentCardIndex + 1 + Math.floor(Math.random() * (remainingCount + 1));
+      
+      // Cuántas cartas saltar como mínimo antes de volver a mostrarla (ej. después de 3 cartas si se puede)
+      const minOffset = Math.min(3, remainingCount); 
+      const randomExtra = Math.floor(Math.random() * (remainingCount - minOffset + 1));
+      
+      const insertIndex = this.currentCardIndex + 1 + minOffset + randomExtra;
+      
       this.cards.splice(insertIndex, 0, updatedCard);
     } else {
       this.cardsReviewed++;

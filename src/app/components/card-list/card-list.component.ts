@@ -17,6 +17,7 @@ export class CardListComponent implements OnInit {
   deckId?: string;
   deck?: Deck;
   cards: Flashcard[] = [];
+  searchQuery: string = '';
   showBack = false;
   selectedCard?: Flashcard;
   isLoading = true;
@@ -49,6 +50,22 @@ export class CardListComponent implements OnInit {
   async loadCards(): Promise<void> {
     if (!this.deckId) return;
     this.cards = await this.supabaseService.getCards(this.deckId);
+  }
+
+  get filteredCards(): Flashcard[] {
+    if (!this.searchQuery.trim()) {
+      return this.cards;
+    }
+    const query = this.searchQuery.toLowerCase();
+    return this.cards.filter(card => 
+      card.word.toLowerCase().includes(query) || 
+      (card.meanings && card.meanings.some(m => m.toLowerCase().includes(query)))
+    );
+  }
+
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery = input.value;
   }
 
   async deleteCard(cardId: string): Promise<void> {

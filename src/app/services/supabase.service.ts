@@ -57,8 +57,9 @@ export class SupabaseService {
     return {
       id: row.id,
       deckId: row.deck_id,
-      front: row.front,
-      back: row.back,
+      word: row.word,
+      meanings: row.meanings || [],
+      sentence: row.sentence ?? undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
       easeFactor: Number(row.ease_factor),
@@ -206,8 +207,9 @@ export class SupabaseService {
 
   async createCard(input: {
     deckId: string;
-    front: string;
-    back: string;
+    word: string;
+    meanings: string[];
+    sentence?: string;
   }): Promise<Flashcard> {
     const now = new Date();
     const nowIso = now.toISOString();
@@ -216,8 +218,9 @@ export class SupabaseService {
       .from('cards')
       .insert({
         deck_id: input.deckId,
-        front: input.front,
-        back: input.back,
+        word: input.word,
+        meanings: input.meanings,
+        sentence: input.sentence ?? null,
         ease_factor: 2.5,
         interval: 0,
         repetitions: 0,
@@ -241,8 +244,9 @@ export class SupabaseService {
     updates: Partial<
       Pick<
         Flashcard,
-        | 'front'
-        | 'back'
+        | 'word'
+        | 'meanings'
+        | 'sentence'
         | 'deckId'
         | 'easeFactor'
         | 'interval'
@@ -258,8 +262,9 @@ export class SupabaseService {
       updated_at: nowIso
     };
 
-    if (updates.front !== undefined) payload.front = updates.front;
-    if (updates.back !== undefined) payload.back = updates.back;
+    if (updates.word !== undefined) payload.word = updates.word;
+    if (updates.meanings !== undefined) payload.meanings = updates.meanings;
+    if (updates.sentence !== undefined) payload.sentence = updates.sentence;
     if (updates.deckId !== undefined) payload.deck_id = updates.deckId;
     if (updates.easeFactor !== undefined) payload.ease_factor = updates.easeFactor;
     if (updates.interval !== undefined) payload.interval = updates.interval;
@@ -321,6 +326,28 @@ export class SupabaseService {
     }
 
     return (data ?? []).map((row) => this.mapCardRow(row));
+  }
+
+  // Verificar si la palabra ya existe en el mazo (case insensitive)
+  async isWordUsedInDeck(deckId: string, word: string, excludeCardId?: string): Promise<boolean> {
+    let query = this.supabase
+      .from('cards')
+      .select('id', { count: 'exact', head: true })
+      .eq('deck_id', deckId)
+      .ilike('word', word); // ilike hace la comparación case insensitive en PostgreSQL
+
+    if (excludeCardId) {
+      query = query.neq('id', excludeCardId);
+    }
+
+    const { count, error } = await query;
+
+    if (error) {
+      console.error('Error al comprobar unicidad de la palabra', error);
+      throw error;
+    }
+
+    return (count ?? 0) > 0;
   }
 }
 

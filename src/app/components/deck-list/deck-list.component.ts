@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { Deck } from '../../models/deck.model';
 import { Flashcard } from '../../models/flashcard.model';
+import { SpacedRepetitionService } from '../../services/spaced-repetition.service';
 
 @Component({
   selector: 'app-deck-list',
@@ -18,7 +19,10 @@ export class DeckListComponent implements OnInit {
   cardsDueByDeck: Map<string, number> = new Map();
   isLoading = true;
 
-  constructor(private supabaseService: SupabaseService) { }
+  constructor(
+    private supabaseService: SupabaseService,
+    private spacedRepetitionService: SpacedRepetitionService
+  ) { }
 
   ngOnInit(): void {
     void this.loadDecks();
@@ -64,5 +68,13 @@ export class DeckListComponent implements OnInit {
 
   getDueCount(deckId: string): number {
     return this.cardsDueByDeck.get(deckId) || 0;
+  }
+
+  getDeckProgress(deckId: string): number {
+    const cards = this.cardsByDeck.get(deckId) || [];
+    if (cards.length === 0) return 0;
+    
+    const totalProgress = cards.reduce((sum, card) => sum + this.spacedRepetitionService.getMasteryPercentage(card), 0);
+    return Math.round(totalProgress / cards.length);
   }
 }

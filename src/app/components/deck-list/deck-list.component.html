@@ -89,15 +89,13 @@
 
       <div class="deck-stats">
         <div class="stat">
-          <span class="stat-value">{{ getCardCount(deck.id) }}</span>
-          <span class="stat-label">Cartas</span>
+          <span class="stat-value">{{ getDeckProgress(deck.id) }}%</span>
+          <span class="stat-label">Progreso</span>
         </div>
-        @if (getDueCount(deck.id) > 0) {
         <div class="stat stat-due">
           <span class="stat-value">{{ getDueCount(deck.id) }}</span>
           <span class="stat-label">Pendientes</span>
         </div>
-        }
       </div>
 
       <div class="deck-actions">
@@ -108,6 +106,13 @@
             <circle cx="12" cy="12" r="3"></circle>
           </svg>
           Repasar
+        </a>
+        <a [routerLink]="['/decks', deck.id, 'review']" [queryParams]="{mode: 'practice'}" class="btn-cards" (click)="$event.stopPropagation()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          Práctica
         </a>
       </div>
     </div>

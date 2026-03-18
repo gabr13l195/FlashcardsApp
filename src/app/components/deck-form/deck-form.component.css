@@ -161,8 +161,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 2rem;
-  background: var(--text-primary);
-  color: var(--bg-dark);
+  background: var(--gradient-primary);
+  color: #ffffff;
   border: none;
   border-radius: var(--radius-full);
   font-family: 'Inter', sans-serif;
@@ -174,7 +174,7 @@
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+  box-shadow: var(--glow-primary);
 }
 
 .btn-primary:disabled {

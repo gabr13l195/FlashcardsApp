@@ -17,30 +17,36 @@ export class SpacedRepetitionService {
     const updatedCard: Flashcard = { ...card };
     const now = new Date();
 
-    if (response === 'more') {
-      // El usuario siente que necesita más práctica: mantener intervalo diario
-      // y reiniciar el contador de repeticiones.
+    if (response === 'again') {
       updatedCard.repetitions = 0;
       updatedCard.interval = 1;
-      updatedCard.easeFactor = Math.max(1.3, card.easeFactor - 0.1);
+      updatedCard.easeFactor = Math.max(1.3, card.easeFactor - 0.2);
     } else {
-      // "Me la sé": aumentar ligeramente la facilidad e intervalo.
       let nextInterval: number;
-
+      
+      // Si es su primera vez acertándola, empezamos con 1 día para repasar mañana, a menos que sea fácil
       if (card.repetitions === 0) {
-        // Primera vez que se marca "Me la sé": repasar mañana
-        nextInterval = 1;
-      } else if (card.repetitions === 1) {
-        // Segunda vez: espaciar un poco más
-        nextInterval = 3;
+        nextInterval = response === 'easy' ? 4 : 1;
       } else {
-        // A partir de ahí, duplicar suavemente hasta un máximo razonable
-        nextInterval = Math.min(30, Math.round(card.interval * 2));
+        // Fórmulas solicitadas por el usuario:
+        switch(response) {
+          case 'hard':
+            nextInterval = card.interval * 1.2;
+            updatedCard.easeFactor = Math.max(1.3, card.easeFactor - 0.15);
+            break;
+          case 'good':
+            nextInterval = card.interval * card.easeFactor;
+            // easeFactor se mantiene igual para 'good' generalmente
+            break;
+          case 'easy':
+            nextInterval = card.interval * (card.easeFactor + 0.3);
+            updatedCard.easeFactor = card.easeFactor + 0.15;
+            break;
+        }
       }
 
       updatedCard.repetitions = card.repetitions + 1;
-      updatedCard.interval = Math.max(1, nextInterval);
-      updatedCard.easeFactor = Math.min(2.5, card.easeFactor + 0.05);
+      updatedCard.interval = Math.max(1, Math.round(nextInterval!));
     }
 
     updatedCard.nextReviewDate = this.addDays(now, updatedCard.interval);
@@ -57,11 +63,19 @@ export class SpacedRepetitionService {
   }
 
   getMasteryPercentage(card: Flashcard): number {
-    if (card.repetitions === 0) return 0;
-
-    const easeScore = (card.easeFactor - 1.3) / (2.5 - 1.3);
-    const repScore = Math.min(1, card.repetitions / 5);
-
-    return Math.round((easeScore * 0.6 + repScore * 0.4) * 100);
+    if (card.interval === 0 && card.repetitions === 0) return 0; // Nueva carta
+    if (card.repetitions === 0) return 25; // "De nuevo" (falló recientemente)
+    
+    if (card.repetitions === 1) {
+      if (card.interval >= 4) return 100; // "Fácil" en el primer intento
+      return 50; // "Difícil" o "Bien" en el primer intento
+    }
+    
+    if (card.repetitions === 2) {
+      if (card.interval >= 7) return 100; // "Fácil" incrementa rápido el intervalo
+      return 75; // "Bien" típicamente llega acá
+    }
+    
+    return 100; // 3 o más repeticiones exitosas se considera "Fácil"/Dominada
   }
 }

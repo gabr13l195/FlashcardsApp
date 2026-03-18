@@ -44,17 +44,20 @@
     }
 
     <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
-      <div class="card-faces">
-        <!-- Front Face -->
+      <div class="card-faces" style="flex-direction: column;">
+        <!-- Word -->
         <div class="face-container">
           <div class="face-header">
-            <span class="face-label">Frente</span>
+            <span class="face-label">Palabra</span>
             <span class="face-lang">Inglés</span>
           </div>
-          <textarea id="front" formControlName="front" placeholder="Ej: To achieve your goals..." class="face-textarea"
-            [class.error]="cardForm.get('front')?.invalid && cardForm.get('front')?.touched" rows="4"></textarea>
-          @if (cardForm.get('front')?.invalid && cardForm.get('front')?.touched) {
-          <span class="error-message">El texto es requerido</span>
+          <input type="text" id="word" formControlName="word" placeholder="Ej: Achieve" class="face-input"
+            [class.error]="(cardForm.get('word')?.invalid && cardForm.get('word')?.touched) || duplicateWordError" autocomplete="off" (input)="onWordInput($event)" />
+          @if (cardForm.get('word')?.invalid && cardForm.get('word')?.touched) {
+          <span class="error-message">La palabra es requerida</span>
+          }
+          @if (duplicateWordError) {
+          <span class="error-message">Esta palabra ya existe en el mazo actual</span>
           }
         </div>
 
@@ -62,22 +65,34 @@
           <div class="divider-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2">
-              <path d="M7 16V4M7 4L3 8M7 4L11 8"></path>
-              <path d="M17 8v12M17 20l-4-4M17 20l4-4"></path>
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
             </svg>
           </div>
         </div>
 
-        <!-- Back Face -->
+        <!-- Definition -->
         <div class="face-container">
-          <div class="face-header">
-            <span class="face-label">Reverso</span>
-            <span class="face-lang">Español</span>
+          <div class="face-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span class="face-label" style="display: block;">Definición</span>
+              <span class="face-lang">Traducción, significados y oración</span>
+            </div>
+            <button type="button" class="btn-text" (click)="generateDetails()" [disabled]="isGenerating || !cardForm.get('word')?.value" style="display: flex; align-items: center; color: var(--primary); background: transparent; border: none; font-weight: 600; cursor: pointer;">
+              @if(isGenerating) {
+                <span class="spinner" style="width: 14px; height: 14px; margin: 0; border-width: 2px;"></span>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.25rem;">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              }
+              <span style="margin-left: 0.25rem;">Generar</span>
+            </button>
           </div>
-          <textarea id="back" formControlName="back" placeholder="Ej: Para lograr tus metas..." class="face-textarea"
-            [class.error]="cardForm.get('back')?.invalid && cardForm.get('back')?.touched" rows="4"></textarea>
-          @if (cardForm.get('back')?.invalid && cardForm.get('back')?.touched) {
-          <span class="error-message">La traducción es requerida</span>
+          <textarea id="definition" formControlName="definition" placeholder="Ej: Lograr, alcanzar.&#10;&#10;Ejemplo:&#10;I want to achieve my goals." class="face-textarea"
+            [class.error]="cardForm.get('definition')?.invalid && cardForm.get('definition')?.touched" rows="6"></textarea>
+          @if (cardForm.get('definition')?.invalid && cardForm.get('definition')?.touched) {
+            <span class="error-message">La definición es requerida</span>
           }
         </div>
       </div>
@@ -86,12 +101,16 @@
         <button type="button" class="btn-secondary" (click)="cancel()">
           {{ isEditMode || cardsAdded === 0 ? 'Cancelar' : 'Terminar y Volver' }}
         </button>
-        <button type="submit" class="btn-primary" [disabled]="cardForm.invalid">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
+        <button type="submit" class="btn-primary" [disabled]="cardForm.invalid || isSubmitting">
+          @if(isSubmitting) {
+            <span class="spinner" style="width: 16px; height: 16px; margin: 0; border-width: 2px;"></span>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          }
           {{ isEditMode ? 'Guardar Cambios' : 'Añadir y Continuar' }}
         </button>
       </div>

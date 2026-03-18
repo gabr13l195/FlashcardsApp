@@ -212,7 +212,7 @@
 /* ── Response Buttons ── */
 .response-buttons {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 2rem;
   animation: fadeInUp 0.4s ease;
@@ -250,26 +250,44 @@
   color: var(--text-primary);
 }
 
-/* More button (red accent) */
-.response-more {
+/* Again button (red accent) */
+.response-again {
   border-color: rgba(248, 113, 113, 0.4);
 }
-
-.response-more:hover {
+.response-again:hover {
   background: var(--danger-light);
   border-color: var(--danger);
   box-shadow: 0 4px 20px rgba(248, 113, 113, 0.15);
 }
 
-/* Known button (blue accent) */
-.response-known {
-  border-color: rgba(79, 140, 255, 0.4);
+/* Hard button (orange accent) */
+.response-hard {
+  border-color: rgba(251, 191, 36, 0.4);
+}
+.response-hard:hover {
+  background: var(--warning-light);
+  border-color: var(--warning);
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.15);
 }
 
-.response-known:hover {
-  background: var(--primary-light);
-  border-color: var(--primary);
-  box-shadow: 0 4px 20px rgba(79, 140, 255, 0.15);
+/* Good button (light green accent) */
+.response-good {
+  border-color: rgba(134, 239, 172, 0.4);
+}
+.response-good:hover {
+  background: rgba(134, 239, 172, 0.12);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(134, 239, 172, 0.15);
+}
+
+/* Easy button (green accent) */
+.response-easy {
+  border-color: rgba(52, 211, 153, 0.4);
+}
+.response-easy:hover {
+  background: var(--success-light);
+  border-color: var(--success);
+  box-shadow: 0 4px 20px rgba(52, 211, 153, 0.15);
 }
 
 /* ── Review Complete ── */
