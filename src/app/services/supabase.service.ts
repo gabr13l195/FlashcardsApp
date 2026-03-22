@@ -38,6 +38,11 @@ export class SupabaseService {
     });
   }
 
+  // Getter para poder usar Edge Functions en otros servicios
+  get client(): SupabaseClient {
+    return this.supabase;
+  }
+
   // ---------- Mapeos helper ----------
 
   private mapDeckRow(row: any): Deck {
