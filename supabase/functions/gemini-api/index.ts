@@ -31,8 +31,8 @@ Deno.serve(async (req) => {
 
     // Acción 1: Solo traducir la palabra
     if (action === 'translate') {
-      const prompt = `Traduce la palabra o frase en inglés "${word}" al español de la forma más natural y usada comúnmente en conversaciones con respecto a su significado. 
-Responde ÚNICAMENTE con la traducción en español, sin comillas, signos de puntuación extra, sin pronunciación ni explicaciones de ningún tipo. Solo el texto en español.`;
+      const prompt = `Traduce la clave o palabra en inglés "${word}" al español de la forma más exacta, directa y concisa posible.
+Responde ÚNICAMENTE con la traducción exacta en español (máximo 1-3 palabras), sin comillas, sin signos de puntuación extra y sin explicaciones. Solo el texto traducido.`;
       
       const result = await model.generateContent(prompt);
       resultText = result.response.text().trim();
@@ -43,12 +43,11 @@ Responde ÚNICAMENTE con la traducción en español, sin comillas, signos de pun
 
     // Acción 2: Generar detalle (el JSON)
     } else if (action === 'details') {
-      const prompt = `Actúa como un profesor nativo de inglés.
-Considera la palabra/frase en inglés: "${word}".
-Su significado principal en español es "${primaryTranslation}".
+      const prompt = `Considera la palabra o frase en inglés: "${word}".
+Su traducción principal al español es "${primaryTranslation}".
 
-Proporciona EXACTAMENTE un objeto JSON válido, sin comillas invertidas de markdown y sin ningún otro texto explicativo, con las siguientes propiedades:
-1. "secondaryMeaning": Un segundo significado, uso común, sinónimo o acepción popular que tenga en español (diferente al principal), que sea muy conciso. (Máximo 2-4 palabras).
+Proporciona EXACTAMENTE un objeto JSON válido, sin comillas invertidas de markdown y sin ningún texto explicativo extra, con las siguientes propiedades:
+1. "secondaryMeaning": El significado, uso o acepción más exacta y corta en español (diferente a la principal, de máximo 1-3 palabras que permita ver la palabra traducida con claridad).
 2. "sentence": Una oración completa que muestre cómo usar esa palabra en inglés, adecuada para nivel B1 (intermedio), con contexto natural y claro.
 
 Formato requerido estricto:

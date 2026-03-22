@@ -78,15 +78,16 @@
               <span class="face-label" style="display: block;">Definición</span>
               <span class="face-lang">Traducción, significados y oración</span>
             </div>
-            <button type="button" class="btn-text" (click)="generateDetails()" [disabled]="isGenerating || !cardForm.get('word')?.value" style="display: flex; align-items: center; color: var(--primary); background: transparent; border: none; font-weight: 600; cursor: pointer;">
+            <button type="button" class="btn-gemini" [class.generating]="isGenerating" (click)="generateDetails()" [disabled]="isGenerating || !cardForm.get('word')?.value">
               @if(isGenerating) {
-                <span class="spinner" style="width: 14px; height: 14px; margin: 0; border-width: 2px;"></span>
+                <span class="spinner" style="width: 15px; height: 15px; margin: 0; border-width: 2px; border-color: rgba(255,255,255,0.3); border-top-color: #ffffff;"></span>
+                <span>Generando...</span>
               } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.25rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
+                <span>Generar con IA</span>
               }
-              <span style="margin-left: 0.25rem;">Generar</span>
             </button>
           </div>
           <textarea id="definition" formControlName="definition" placeholder="Ej: Lograr, alcanzar.&#10;&#10;Ejemplo:&#10;I want to achieve my goals." class="face-textarea"
